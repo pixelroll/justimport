@@ -2,6 +2,9 @@ name: Build and Publish Release
 run-name: Build and publish release ${{ github.event.release.tag_name || github.ref_name }}
 
 on:
+  schedule:
+    - cron: "45 5 * * *"
+  workflow_dispatch:
   release:
     types: [published]
 
@@ -48,7 +51,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |
-            VERSION=${{ github.event.release.tag_name }}
+            VERSION=${{ github.event.release.tag_name || github.ref_name || 'dev' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
